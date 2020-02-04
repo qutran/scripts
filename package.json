@@ -8,7 +8,7 @@
   "scripts": {},
   "author": "qutran",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "@octokit/rest": "^16.43.1",
     "dtsgenerator": "^2.4.0",
     "pluralize": "^8.0.0",
