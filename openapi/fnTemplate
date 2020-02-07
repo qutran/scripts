@@ -1,0 +1,4 @@
+export function {name}({inputArgs}): Promise<{respType}> {
+  {pathDestruct}
+  return fetch<{respType}>('{method}', {url}, {params});
+}
