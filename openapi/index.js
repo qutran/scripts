@@ -176,7 +176,7 @@ async function main({
   writeOutput(outputFolder, `${outputName}.ts`, api, 'api implementation');
   writeOutput(
     outputFolder,
-    `apiResources.ts`,
+    `${outputName}Resources.ts`,
     resources,
     `resource's implementation`,
   );
