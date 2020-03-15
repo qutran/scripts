@@ -26,8 +26,19 @@ function main({ sourceFolder }) {
     })
     .join('\n');
 
+  const withState = new Set();
+  for (const file of files) {
+    if (file.includes('-active')) withState.add(file.split('-active')[0]);
+  }
+
+  const withStateType = withState.size
+    ? `\nexport type IconsWithState = ${[...withState]
+        .map(item => JSON.stringify(item))
+        .join(' | ')};`
+    : '';
+
   const content = prettier.format(
-    `export const ${assetsName}Map = { ${innerContent} };`,
+    `export const ${assetsName}Map = { ${innerContent} };\n${withStateType}`,
     { ...prettierOptions, parser: 'typescript' },
   );
   log(messageMap).generate.done();
