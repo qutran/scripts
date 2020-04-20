@@ -1,5 +1,6 @@
 const { Octokit } = require('@octokit/rest');
 const { log, startLoading, stopLoading } = require('../common/log');
+const fs = require('fs');
 
 async function loadOpenApi({ token, owner, name, path }) {
   log('openapi config').load.start();

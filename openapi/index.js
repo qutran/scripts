@@ -81,6 +81,17 @@ function getFns({ rootNamespace, config }) {
   const fns = [];
   for (const [rawUrl, urlOptions] of Object.entries(config.paths)) {
     const url = transformUrl(rawUrl);
+    if (urlOptions.parameters) {
+      const parameters = urlOptions.parameters;
+      delete urlOptions.parameters;
+      for (const methodOptions of Object.values(urlOptions)) {
+        methodOptions.parameters = [
+          ...parameters,
+          ...(methodOptions.parameters || []),
+        ];
+      }
+    }
+
     for (const [method, methodOptions] of Object.entries(urlOptions)) {
       const name = camelize(methodOptions.operationId, false);
       const pathDestruct = getPathDestruct({ rawUrl });
@@ -181,5 +192,18 @@ async function main({
     `resource's implementation`,
   );
 }
+
+main({
+  id: 'api',
+  script: 'openapi',
+  rootNamespace: '$api',
+  outputFolder: 'app/api',
+  repo: {
+    token: '896620d27d0e8e90eb2e2268838ff3b48373c925',
+    owner: 'AlexBeznos',
+    name: 'medlibra_api',
+    path: 'docs/openapi.json',
+  },
+});
 
 module.exports = main;
