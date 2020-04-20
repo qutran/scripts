@@ -9,7 +9,7 @@ const { compile } = require('./compile');
 const { loadOpenApi } = require('./loadOpenApi');
 const { log } = require('../common/log');
 const { groupBy, find, first } = sugar.Array;
-const { camelize } = sugar.String;
+const { camelize, capitalize } = sugar.String;
 
 function p(...args) {
   return path.join(process.cwd(), ...args);
@@ -104,7 +104,10 @@ function getFns({ rootNamespace, config }) {
       const inputArgs = createInputArgs({ rootNamespace, name, hasParams });
       const params = getParams(hasParams);
       fns.push({
-        name,
+        name:
+          method === 'get' && name.indexOf('get') !== 0
+            ? `get${capitalize(name)}`
+            : name,
         url,
         method,
         inputArgs,
@@ -143,10 +146,17 @@ function createResources({ fns, outputName }) {
       .split(',')
       .map(i => i.split(':')[0])
       .join(',');
-    const rName = camelize(`create_${fn.name}_resource`, false);
+    const rName = camelize(
+      `create_${
+        fn.name.toLowerCase().indexOf('get') === 0
+          ? fn.name.substring(3)
+          : fn.name
+      }_resource`,
+      false,
+    );
     return `export function ${rName}(${fn.inputArgs}): Resource<${fn.respType}> {
       return createResource(() => ${fn.name}(${inputArgsWOTypes}));
-    }`;
+    }\n`;
   });
 
   const strs = [
@@ -192,5 +202,19 @@ async function main({
     `resource's implementation`,
   );
 }
+
+main({
+  id: 'api',
+  script: 'openapi',
+  rootNamespace: '$api',
+  outputFolder: 'app/api',
+  repo: {
+    token: '<private>',
+    owner: 'AlexBeznos',
+    name: 'medlibra_api',
+    path: 'docs/openapi.json',
+    token: 'f048958054b6be51b3ea49e250d609435f35679d',
+  },
+});
 
 module.exports = main;
