@@ -193,17 +193,4 @@ async function main({
   );
 }
 
-main({
-  id: 'api',
-  script: 'openapi',
-  rootNamespace: '$api',
-  outputFolder: 'app/api',
-  repo: {
-    token: '896620d27d0e8e90eb2e2268838ff3b48373c925',
-    owner: 'AlexBeznos',
-    name: 'medlibra_api',
-    path: 'docs/openapi.json',
-  },
-});
-
 module.exports = main;
