@@ -105,7 +105,9 @@ function createRealmSchemas(outputFolder, dts) {
   const ref = { hasList: false };
 
   const program = TJS.getProgramFromFiles([pathToFile]);
-  const generator = TJS.buildGenerator(program, {}, [pathToFile]);
+  const generator = TJS.buildGenerator(program, { ignoreErrors: true }, [
+    pathToFile,
+  ]);
 
   const defs = generator
     .getUserSymbols()
