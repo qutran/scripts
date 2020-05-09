@@ -6,6 +6,7 @@ const prettierOptions = require(path.join(process.cwd(), './.prettierrc.js'));
 const dtsGenerator = require('dtsgenerator').default;
 const { createTypeNameConverter } = require('./createTypeNameConverter');
 const { compile } = require('./compile');
+const { createRealmSchemas } = require('./createRealmSchemas');
 const { loadOpenApi } = require('./loadOpenApi');
 const { log } = require('../common/log');
 const { groupBy, find, first } = sugar.Array;
@@ -201,6 +202,21 @@ async function main({
     resources,
     `resource's implementation`,
   );
+
+  createRealmSchemas(outputFolder, `${outputName}.d.ts`);
 }
+
+main({
+  id: 'api',
+  script: 'openapi',
+  rootNamespace: '$api',
+  outputFolder: 'app/resources',
+  repo: {
+    token: '92fa36c32e3ef4da2a224afd4e4c79cfbfac9ef2',
+    owner: 'AlexBeznos',
+    name: 'medlibra_api',
+    path: 'docs/openapi.json',
+  },
+});
 
 module.exports = main;

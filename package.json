@@ -16,6 +16,7 @@
     "sugar": "^2.0.6"
   },
   "devDependencies": {
-    "@types/sugar": "^2.0.2"
+    "@types/sugar": "^2.0.2",
+    "typescript-json-schema": "^0.42.0"
   }
 }
