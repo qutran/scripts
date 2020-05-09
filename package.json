@@ -13,10 +13,10 @@
     "dtsgenerator": "^2.4.0",
     "pluralize": "^8.0.0",
     "prettier": "^1.19.1",
-    "sugar": "^2.0.6"
+    "sugar": "^2.0.6",
+    "typescript-json-schema": "^0.42.0"
   },
   "devDependencies": {
-    "@types/sugar": "^2.0.2",
-    "typescript-json-schema": "^0.42.0"
+    "@types/sugar": "^2.0.2"
   }
 }
