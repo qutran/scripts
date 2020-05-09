@@ -206,17 +206,4 @@ async function main({
   createRealmSchemas(outputFolder, `${outputName}.d.ts`);
 }
 
-main({
-  id: 'api',
-  script: 'openapi',
-  rootNamespace: '$api',
-  outputFolder: 'app/resources',
-  repo: {
-    token: '92fa36c32e3ef4da2a224afd4e4c79cfbfac9ef2',
-    owner: 'AlexBeznos',
-    name: 'medlibra_api',
-    path: 'docs/openapi.json',
-  },
-});
-
 module.exports = main;
