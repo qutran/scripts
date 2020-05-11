@@ -73,10 +73,10 @@ function createSchemas(def, ref) {
       const schema = {
         name: key,
         properties: Object.fromEntries(
-          value.map(([key, value]) => [
-            key,
-            value === 'number' ? 'float' : value,
-          ]),
+          value.map(([key, value]) => {
+            const isId = key === 'id';
+            return [key, value === 'number' ? (isId ? 'int' : 'float') : value];
+          }),
         ),
       };
 
