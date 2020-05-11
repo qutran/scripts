@@ -72,7 +72,10 @@ function createSchemas(def, ref) {
       const idPresents = !!value.find(([key]) => key === 'id');
       const schema = {
         name: key,
-        properties: Object.fromEntries(value),
+        properties: Object.fromEntries(value).map(([key, value]) => [
+          key,
+          value === 'number' ? 'float' : value,
+        ]),
       };
 
       if (idPresents) schema.primaryKey = 'id';
