@@ -74,8 +74,14 @@ function createSchemas(def, ref) {
         name: key,
         properties: Object.fromEntries(
           value.map(([key, value]) => {
+            let nextType = value;
             const isId = key === 'id';
-            return [key, value === 'number' ? (isId ? 'int' : 'float') : value];
+            if (value === 'number') {
+              nextType = isId ? 'int' : 'float';
+            } else if (value === 'boolean') {
+              nextType = 'bool';
+            }
+            return [key, nextType];
           }),
         ),
       };
