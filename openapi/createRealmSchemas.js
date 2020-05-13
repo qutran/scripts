@@ -18,18 +18,15 @@ function format(input) {
   });
 }
 
-function walk(
-  {
-    classes = new Map(),
-    parent = '',
-    root = false,
-    name,
-    type,
-    items,
-    properties,
-  },
-  ref,
-) {
+function walk({
+  classes = new Map(),
+  parent = '',
+  root = false,
+  name,
+  type,
+  items,
+  properties,
+}) {
   const isObject = type === 'object';
   const isArray = type === 'array';
   const parentName = `${parent}${capitalize(name)}`;
@@ -40,17 +37,13 @@ function walk(
       classes.get(parent).push([name, parentName]);
     }
     for (const [objName, data] of Object.entries(properties)) {
-      walk({ parent: parentName, name: objName, classes, ...data }, ref);
+      walk({ parent: parentName, name: objName, classes, ...data });
     }
   } else if (isArray) {
-    ref.hasList = true;
     if (!!parent) {
       classes.get(parent).push([name, `${parentName}Item[]`]);
     }
-    walk(
-      { name: root ? parentName : `${parentName}Item`, classes, ...items },
-      ref,
-    );
+    walk({ name: root ? parentName : `${parentName}Item`, classes, ...items });
   } else {
     classes.get(parent).push([name, type]);
   }
@@ -58,14 +51,14 @@ function walk(
   return classes;
 }
 
-function createSchemas(def, ref) {
+function createSchemas(def) {
   if (def.type === 'object' && def.properties.hasNext) {
     const { hasNext, hasPrev, ...rest } = def.properties;
     const nextDef = rest[Object.keys(rest)[0]];
     def = { ...def, ...nextDef };
   }
 
-  const classes = walk({ ...def, root: true }, ref);
+  const classes = walk({ ...def, root: true });
 
   const input = [...classes.entries()]
     .map(([key, value]) => {
@@ -91,14 +84,7 @@ function createSchemas(def, ref) {
       return `class ${key} {
         static schema = ${JSON.stringify(schema)}
 
-        ${value
-          .map(
-            ([key, type]) =>
-              `${key}: ${
-                type.endsWith('[]') ? `List<${type.replace('[]', '')}>` : type
-              }`,
-          )
-          .join('\n')}
+        ${value.map(([key, type]) => `${key}: ${type}`).join('\n')}
       }\n`;
     })
     .join('\n');
@@ -113,7 +99,6 @@ function createRealmSchemas(outputFolder, dts) {
   log('realm schemas').generate.start();
   const input = join(outputFolder, dts);
   const pathToFile = resolve(process.cwd(), input);
-  const ref = { hasList: false };
 
   const program = TJS.getProgramFromFiles([pathToFile]);
   const generator = TJS.buildGenerator(program, { ignoreErrors: true }, [
@@ -128,7 +113,7 @@ function createRealmSchemas(outputFolder, dts) {
       ...generator.getSchemaForSymbol(path),
     }));
 
-  const schemas = defs.map(def => createSchemas(def, ref));
+  const schemas = defs.map(def => createSchemas(def));
   const modelSchemas = schemas.map(item => item.schemas[0]);
   const classesDef = schemas.map(item => item.classes).join('\n');
   const schemasDef = `export const schemas = [${schemas
@@ -137,8 +122,6 @@ function createRealmSchemas(outputFolder, dts) {
   const modelSchemasDef = `export const modelSchemas = {${modelSchemas.join(
     ',',
   )}}\n`;
-
-  const header = ref.hasList ? `import { List } from 'realm';\n\n` : '';
 
   const result = format(
     `${header}${classesDef}\n${schemasDef}\n${modelSchemasDef}`,
