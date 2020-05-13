@@ -123,9 +123,7 @@ function createRealmSchemas(outputFolder, dts) {
     ',',
   )}}\n`;
 
-  const result = format(
-    `${header}${classesDef}\n${schemasDef}\n${modelSchemasDef}`,
-  );
+  const result = format(`${classesDef}\n${schemasDef}\n${modelSchemasDef}`);
 
   log('realm schemas').generate.done();
   fs.writeFileSync(path.join(outputFolder, `apiSchemas.ts`), result);
